@@ -1,4 +1,5 @@
 class RestaurantsController < ApplicationController
+  before_action :set_restaurant, only: :show
 
   def index
     @restaurants = Restaurant.all
@@ -9,13 +10,16 @@ class RestaurantsController < ApplicationController
   end
 
   def new
-    @restaurant= Restaurant.new
+    @restaurant = Restaurant.new
   end
 
   def create
-    @restaurant= Restaurant.new(restaurant_params)
-    @restaurant.save
-    redirect_to restaurants(restaurant_path)
+    @restaurant = Restaurant.new(restaurant_params)
+    if @restaurant.save
+      redirect_to restaurant_path(@restaurant)
+    else
+      render :new
+    end
   end
 
   private
@@ -25,7 +29,7 @@ class RestaurantsController < ApplicationController
   end
 
   def restaurant_params
-    params.require(:restaurant).permit(:name, :address, :category)
+    params.require(:restaurant).permit(:name, :address, :category, :phone_number)
   end
 
 end
